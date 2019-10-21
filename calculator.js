@@ -15,13 +15,14 @@ function initalValue(){
    oper = readline.question("enter operation: ")
    num2 = readline.question("enter second value: ")
 
-   console.log("Total: " + operators[oper](num1, num2))
+   total = operators[oper](num1,num2)
+   console.log("Total: " + total)
 
 
 }
 
 function add(num1 = 0, num2 = 0) {
-    return num1 + num2;
+    return parseFloat(num1) + parseFloat(num2);
 }
 
 function sub(num1 = 0, num2 = 0) {
