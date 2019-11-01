@@ -1,8 +1,8 @@
 dividedByZero = false;
-var finalTotal;
 var runCalc = true;
-
-var test = 0;
+var restartCheck = false;
+var firstRun = true;
+var newTotal = 0;
 var readline = require('readline-sync');
 var operators = {
     1: add,
@@ -26,30 +26,70 @@ var operatorShortText = {
 var mathHistory = [];
 
 
-runCalculator();
+var values = (function () {
+    var runningTotal = 0;
+    var finalTotal = 0;
 
+    function setRunningTotal(newNumber) {
+        runningTotal = newNumber;
+    }
+    function getRunningTotal(){
+        return runningTotal;
+    }
+    return {
+        getRunningTotal,
+        finalTotal,
+        setRunningTotal,
+    }
+
+})();
+
+while (runCalc) {
+    console.log(runCalc)
+    runCalculator();
+    restartCalc(restartCheck);
+}
 
 
 function runCalculator(num1 = null) {
+    if (num1 === null && firstRun) {
+        num1 = validateFirstNumber()
+        mathHistory.push(num1)
+        firstRun = false;
+    }
+    else {
+        num1 = values.getRunningTotal();
+    }
+    let operation = validateOperation(num1);
+    let num2 = validateSecondNumber(operation);
+    let tempTotal = operators[operation](num1, num2);
+    values.setRunningTotal(tempTotal);
+    console.log(`***** YOU DID: ${num1}${operatorShortText[operation]}${num2} = ${values.getRunningTotal()} *****`)
+    let historyTotal = "= " + values.getRunningTotal();
+    mathHistory.push(operatorShortText[operation], num2, historyTotal);
+    num1 = values.getRunningTotal();
+    checkForHistory(values.getRunningTotal());
+    checkForcontinueMath();
+}
 
-
-    while (runCalc) {
-        if (num1 === null) {
-            num1 = validateFirstNumber()
-            mathHistory.push(num1)
+function restartCalc(restartCheck) {
+    if (restartCheck) {
+        restart = readline.question("Restart calculator? y/n: ");
+        if (restart == "y") {
+            firstRun = true;
+            runCalc = true;
+            mathHistory = [];
+            return;
         }
-        let operation = validateOperation(num1);
-        let num2 = validateSecondNumber(operation);
-
-        let runningTotal = operators[operation](num1, num2);
-        console.log(`***** YOU DID: ${num1}${operatorShortText[operation]}${num2} = ${runningTotal} *****`)
-        let historyTotal = "= " + runningTotal;
-        mathHistory.push(operatorShortText[operation], num2, historyTotal);
-        num1 = runningTotal;
-        checkForHistory(runningTotal);
-        checkForcontinueMath(runningTotal);
+        else if (restart == "n") {
+            console.log("Good-Bye")
+            runCalc = false;
+            firstRun = false;
+            return;
+        }
     }
 }
+
 
 function validateOperation(number) {
     while (true) {
@@ -66,7 +106,7 @@ function validateOperation(number) {
                     operation = readline.question(`enter operation: \n 1: ADD \n 2: SUBTRACT \n 3: MULTIPLY \n 4: DIVIDE \n   `);
                     return operation;
                 }
-                else if(choice == "n") {
+                else if (choice == "n") {
                     console.log("TOO BAD, I am not going to puncture a hole in space-time just for your amusement.");
                     readline.question("Press enter to continue selecting a different operation....outlaw!");
                     break;
@@ -113,8 +153,8 @@ function validateSecondNumber(operation) {
     }
 }
 
-function checkForHistory(total) {
-    total = "= " + total;
+function checkForHistory(historyTotal) {
+   historyTotal = "= " + historyTotal;
     showHistory = readline.question("??? Do you wish to see a history of operations leading to this value? (y/n): ")
     if (showHistory === "y") {
         for (var i = 0; i < mathHistory.length; i++) {
@@ -129,20 +169,22 @@ function checkForHistory(total) {
 
 }
 
-function checkForcontinueMath(runningTotal) {
+function checkForcontinueMath() {
     if (dividedByZero) {
         console.log("DIVISION BY ZERO ERROR!!!!!!!! BROKEN")
         runCalc = false;
         return;
     }
-    continueMath = readline.question(`??? Continue doing math with this value |${runningTotal}|? y/n: `)
+    continueMath = readline.question(`??? Continue doing math with this value |${values.getRunningTotal()}|? y/n: `)
     if (continueMath === "y") {
-        console.log(`**** First number is ${runningTotal}`)
+        console.log(`**** First number is ${values.getRunningTotal()}`)
         return;
     }
     if (continueMath === "n") {
-        equals(runningTotal);
+        equals(values.getRunningTotal());
+        restartCheck = true;
         runCalc = false;
+
         return;
     }
 
