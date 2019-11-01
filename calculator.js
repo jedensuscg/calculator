@@ -1,9 +1,11 @@
 dividedByZero = false;
 var runCalc = true;
-var restartCheck = false;
+var isRestartable = false;
 var firstRun = true;
 var newTotal = 0;
 var readline = require('readline-sync');
+//#region =====ENUMS AND MODULES====
+
 var operators = {
     1: add,
     2: sub,
@@ -25,11 +27,8 @@ var operatorShortText = {
 
 var mathHistory = [];
 
-
-var values = (function () {
+var value = (function () {
     var runningTotal = 0;
-    var finalTotal = 0;
-
     function setRunningTotal(newNumber) {
         runningTotal = newNumber;
     }
@@ -38,42 +37,42 @@ var values = (function () {
     }
     return {
         getRunningTotal,
-        finalTotal,
         setRunningTotal,
     }
 
 })();
+//#endregion
+
+
 
 while (runCalc) {
-    console.log(runCalc)
     runCalculator();
-    restartCalc(restartCheck);
+    restartCalc(isRestartable);
 }
-
 
 function runCalculator(num1 = null) {
     if (num1 === null && firstRun) {
-        num1 = validateFirstNumber()
+        num1 = getFirstNumber()
         mathHistory.push(num1)
         firstRun = false;
     }
     else {
-        num1 = values.getRunningTotal();
+        num1 = value.getRunningTotal();
     }
-    let operation = validateOperation(num1);
-    let num2 = validateSecondNumber(operation);
+    let operation = getOperation(num1);
+    let num2 = getSecondNumber(operation);
     let tempTotal = operators[operation](num1, num2);
-    values.setRunningTotal(tempTotal);
-    console.log(`***** YOU DID: ${num1}${operatorShortText[operation]}${num2} = ${values.getRunningTotal()} *****`)
-    let historyTotal = "= " + values.getRunningTotal();
+    value.setRunningTotal(tempTotal);
+    console.log(`***** YOU DID: ${num1}${operatorShortText[operation]}${num2} = ${value.getRunningTotal()} *****`)
+    let historyTotal = "= " + value.getRunningTotal();
     mathHistory.push(operatorShortText[operation], num2, historyTotal);
-    num1 = values.getRunningTotal();
-    checkForHistory(values.getRunningTotal());
-    checkForcontinueMath();
+    num1 = value.getRunningTotal();
+    updateHistory(value.getRunningTotal());
+    askContinueWithValue();
 }
 
-function restartCalc(restartCheck) {
-    if (restartCheck) {
+function restartCalc(isRestartable) {
+    if (isRestartable) {
         restart = readline.question("Restart calculator? y/n: ");
         if (restart == "y") {
             firstRun = true;
@@ -90,8 +89,20 @@ function restartCalc(restartCheck) {
     }
 }
 
+//#region =====VALIDATION AND NUMBER ASSIGNMENT=====
+function getFirstNumber() {
+    while (true) {
+        number = parseFloat(readline.question("*** Enter the first number you wish to do math on: "));
+        if (isNaN(number)) {
+            console.log("!!! You entered an invalid number. !!!");
+        }
 
-function validateOperation(number) {
+        else {
+            return number;
+        }
+    }
+}
+function getOperation(number) {
     while (true) {
         operation = readline.question(`enter operation: \n 1: ADD \n 2: SUBTRACT \n 3: MULTIPLY \n 4: DIVIDE \n   `)
         if (operation == 1 || operation == 2 || operation == 3) {
@@ -103,8 +114,7 @@ function validateOperation(number) {
                 let choice = readline.question("Would you like to select a different operation?: y/n");
 
                 if (choice == "y") {
-                    operation = readline.question(`enter operation: \n 1: ADD \n 2: SUBTRACT \n 3: MULTIPLY \n 4: DIVIDE \n   `);
-                    return operation;
+                    break;
                 }
                 else if (choice == "n") {
                     console.log("TOO BAD, I am not going to puncture a hole in space-time just for your amusement.");
@@ -125,20 +135,7 @@ function validateOperation(number) {
     }
 }
 
-function validateFirstNumber() {
-    while (true) {
-        number = parseFloat(readline.question("*** Enter the first number you wish to do math on: "));
-        if (isNaN(number)) {
-            console.log("!!! You entered an invalid number. !!!");
-        }
-
-        else {
-            return number;
-        }
-    }
-}
-
-function validateSecondNumber(operation) {
+function getSecondNumber(operation) {
     while (true) {
         number = parseFloat(readline.question(operatorText[operation]));
         if (isNaN(number)) {
@@ -152,8 +149,9 @@ function validateSecondNumber(operation) {
         }
     }
 }
+//#endregion
 
-function checkForHistory(historyTotal) {
+function updateHistory(historyTotal) {
    historyTotal = "= " + historyTotal;
     showHistory = readline.question("??? Do you wish to see a history of operations leading to this value? (y/n): ")
     if (showHistory === "y") {
@@ -169,20 +167,21 @@ function checkForHistory(historyTotal) {
 
 }
 
-function checkForcontinueMath() {
-    if (dividedByZero) {
+function askContinueWithValue() {
+/*     if (dividedByZero) {
         console.log("DIVISION BY ZERO ERROR!!!!!!!! BROKEN")
         runCalc = false;
         return;
-    }
-    continueMath = readline.question(`??? Continue doing math with this value |${values.getRunningTotal()}|? y/n: `)
+    } */
+    continueMath = readline.question(`??? Continue doing math with this value |${value.getRunningTotal()}|? y/n: `)
     if (continueMath === "y") {
-        console.log(`**** First number is ${values.getRunningTotal()}`)
+        console.log(`**** First number is ${value.getRunningTotal()}`)
+        isRestartable = false;
         return;
     }
     if (continueMath === "n") {
-        equals(values.getRunningTotal());
-        restartCheck = true;
+        equals(value.getRunningTotal());
+        isRestartable = true;
         runCalc = false;
 
         return;
@@ -193,10 +192,11 @@ function checkForcontinueMath() {
 
 function equals(finalTotal) {
     console.log(`Your final total for this session is : ||${finalTotal}||`);
-    checkForHistory(finalTotal);
+    updateHistory(finalTotal);
 
 }
 
+//#region =====FORMULAS=====
 function add(num1 = 0, num2 = 0) {
     return parseFloat(num1) + parseFloat(num2);
 }
@@ -217,3 +217,4 @@ function divide(num1 = 1, num2 = 1) {
     return (!num1 || !num2) ? "cant divide by 0" : num1 / num2
 
 }
+//#endregion
