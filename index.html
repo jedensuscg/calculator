@@ -1,9 +1,26 @@
 <!DOCTYPE html>
 
-<head><script src="calculator.js" async></script></head>
+<head>
+    <script src="calculator.js" async></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
 <main>
-    <input type="number" name="num1" id="num1">
-    <input type="number" name="num2" id="num2">
+    <input type="text" name="number" id="inputNumber">
+
     <input type="button" value="+" id="add">
+    <div class="keyPad">
+        <input type="button" value="9" key="9" class="numberKey" id="key9">
+        <input type="button" value="8" key="8" class="numberKey" id="key8">
+        <input type="button" value="7" key="7" class="numberKey" id="key7">
+        <input type="button" value="6" key="6" class="numberKey" id="key6">
+        <input type="button" value="5" key="5" class="numberKey" id="key5">
+        <input type="button" value="4" key="4" class="numberKey" id="key4">
+        <input type="button" value="3" key="3" class="numberKey" id="key3">
+        <input type="button" value="2" key="2" class="numberKey" id="key2">
+        <input type="button" value="1" key="1" class="numberKey" id="key1">
+        <input type="button" value="0" key="0" class="numberKey" id="key0">
+    </div>
+
     <span id="total"></span>
 </main>

@@ -3,12 +3,12 @@ var runCalc = true;
 var restartCheck = false;
 var firstRun = true;
 var newTotal = 0;
+const numberField = document.querySelector('#inputNumber');
+const buttonAdd = document.querySelector('.add')
+const numberKeys = document.querySelectorAll('.numberKey')
+
 
 //#region =====ENUMS AND MODULES====
-var initalizeEvents = (function () {
-
-
-})();
 
 var operators = {
     1: add,
@@ -31,56 +31,101 @@ var operatorShortText = {
 
 var mathHistory = [];
 
-var values = (function () {
-    var runningTotal = 0;
-    var finalTotal = 0;
+var display = (function() {
+    var displayText = "0";
 
+    function getDisplayTextString() {
+        return displayText;
+    }
+    function getDisplayTextNumber() {
+        return parseFloat(displayText);
+    }
+
+    function setDisplayText(number) {
+        if (displayText === "0") {
+            displayText = number;
+        }
+        else {
+            displayText = displayText + number;
+
+        }
+        console.log(displayText)
+        numberField.value = displayText;
+
+    }
+
+    return {
+        getDisplayTextString,
+        getDisplayTextNumber,
+        setDisplayText,
+    }
+})();
+
+var value = (function () {
+    var runningTotal = 0;
+    var num1 = 0;
+    var num2 = 0;
     function setRunningTotal(newNumber) {
         runningTotal = newNumber;
     }
-    function getRunningTotal(){
+    function getRunningTotal() {
         return runningTotal;
+    }
+    function getNum1() {
+        return num1;
+    }
+    function setNum1(number) {
+        num1 = number;
+    }
+    function getNum2() {
+        return num2;
+    }
+    function setNum2(number) {
+        num2 = number;
     }
     return {
         getRunningTotal,
-        finalTotal,
         setRunningTotal,
+        getNum1,
+        setNum1,
+        getNum2,
+        setNum2,
     }
 
 })();
 //#endregion
 
-defineConstants();
+main();
 
-while (runCalc) {
-    console.log(runCalc)
-    runCalculator();
-    restartCalc(restartCheck);
+function main() {
+    numberKeys.forEach(key => {
+        key.addEventListener('click', (e) => {
+            display.setDisplayText(e.target.getAttribute('key'))
+        })
+    });
 }
 
-function runCalculator(num1 = null) {
-    if (num1 === null && firstRun) {
-        num1 = getFirstNumber()
-        mathHistory.push(num1)
-        firstRun = false;
-    }
-    else {
-        num1 = values.getRunningTotal();
-    }
-    let operation = getOperation(num1);
-    let num2 = getSecondNumber(operation);
+
+/* 
+function runCalculator(number, operation) {
+
+    mathHistory.push(number);
+    mathHistory.push(operatorShortText[operation]);
+    value.setNum1(number);
+
+    firstRun = false;
     let tempTotal = operators[operation](num1, num2);
-    values.setRunningTotal(tempTotal);
-    console.log(`***** YOU DID: ${num1}${operatorShortText[operation]}${num2} = ${values.getRunningTotal()} *****`)
-    let historyTotal = "= " + values.getRunningTotal();
+    value.setRunningTotal(tempTotal);
+    console.log(`***** YOU DID: ${num1}${operatorShortText[operation]}${num2} = ${value.getRunningTotal()} *****`)
+    let historyTotal = "= " + value.getRunningTotal();
     mathHistory.push(operatorShortText[operation], num2, historyTotal);
-    num1 = values.getRunningTotal();
-    updateHistory(values.getRunningTotal());
+    num1 = value.getRunningTotal();
+    updateHistory(value.getRunningTotal());
     askContinueWithValue();
-}
+} */
 
-function restartCalc(restartCheck) {
-    if (restartCheck) {
+/* function restartCalc(isRestartable) {
+    if (isRestartable) {
         restart = readline.question("Restart calculator? y/n: ");
         if (restart == "y") {
             firstRun = true;
@@ -96,7 +141,7 @@ function restartCalc(restartCheck) {
         }
     }
 }
-
+ */
 //#region =====VALIDATION AND NUMBER ASSIGNMENT=====
 function getFirstNumber() {
     while (true) {
@@ -122,8 +167,7 @@ function getOperation(number) {
                 let choice = readline.question("Would you like to select a different operation?: y/n");
 
                 if (choice == "y") {
-                    operation = readline.question(`enter operation: \n 1: ADD \n 2: SUBTRACT \n 3: MULTIPLY \n 4: DIVIDE \n   `);
-                    return operation;
+                    break;
                 }
                 else if (choice == "n") {
                     console.log("TOO BAD, I am not going to puncture a hole in space-time just for your amusement.");
@@ -161,7 +205,7 @@ function getSecondNumber(operation) {
 //#endregion
 
 function updateHistory(historyTotal) {
-   historyTotal = "= " + historyTotal;
+    historyTotal = "= " + historyTotal;
     showHistory = readline.question("??? Do you wish to see a history of operations leading to this value? (y/n): ")
     if (showHistory === "y") {
         for (var i = 0; i < mathHistory.length; i++) {
@@ -177,19 +221,20 @@ function updateHistory(historyTotal) {
 }
 
 function askContinueWithValue() {
-    if (dividedByZero) {
-        console.log("DIVISION BY ZERO ERROR!!!!!!!! BROKEN")
-        runCalc = false;
-        return;
-    }
-    continueMath = readline.question(`??? Continue doing math with this value |${values.getRunningTotal()}|? y/n: `)
+    /*     if (dividedByZero) {
+            console.log("DIVISION BY ZERO ERROR!!!!!!!! BROKEN")
+            runCalc = false;
+            return;
+        } */
+    continueMath = readline.question(`??? Continue doing math with this value |${value.getRunningTotal()}|? y/n: `)
     if (continueMath === "y") {
-        console.log(`**** First number is ${values.getRunningTotal()}`)
+        console.log(`**** First number is ${value.getRunningTotal()}`)
+        isRestartable = false;
         return;
     }
     if (continueMath === "n") {
-        equals(values.getRunningTotal());
-        restartCheck = true;
+        equals(value.getRunningTotal());
+        isRestartable = true;
         runCalc = false;
 
         return;
