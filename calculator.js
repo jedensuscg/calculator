@@ -49,7 +49,6 @@ var display = (function () {
     function setUpperDisplayText(number) {
         upperDisplayText = number;
         upperDisplayField.value = upperDisplayText;
-        console.log(upperDisplayText)
     }
     //#endregion
 
@@ -129,7 +128,14 @@ function main() {
             if(!currentOperation){
             display.setLowerDisplayText(e.target.getAttribute('key'))
             }
+            else {
+                display.setLowerDisplayText(e.target.getAttribute('key'))
+                value.setNum2(display.getLowerDisplayValue());
+                value.setRunningTotal(operators[1](value.getNum1(), value.getNum2()));
+                display.setUpperDisplayText(value.getRunningTotal())
+            }
         })
+        
     });
 
     buttonAdd.addEventListener('click', (e) => {
@@ -139,6 +145,13 @@ function main() {
         display.clearLowerDisplay();
         value.setNum1(number);
         currentOperation = operators[1];
+        }
+        else {
+            let number = display.getLowerDisplayTextString();
+            display.setUpperDisplayText(value.getRunningTotal());
+            display.clearLowerDisplay();
+            value.setNum1(number);
+            currentOperation = operators[1];
         }
     });
 }
