@@ -7,10 +7,7 @@ var currentOperation;
 var currentOperationText;
 const lowerDisplayField = document.querySelector('#lowerDisplay');
 const upperDisplayField = document.querySelector('#upperDisplay');
-/* const buttonAdd = document.querySelector('#add');
-const buttonSub = document.querySelector('#sub');
-const buttonMulti = document.querySelector('#multi');
-const buttonDivide = document.querySelector('#divide'); */
+const operatorTextDisplay = document.querySelector('#operatorText');
 const operatorKeys = document.querySelectorAll('#operator');
 const numberKeys = document.querySelectorAll('.numberKey');
 const decimalKey = document.querySelector('#keyDot');
@@ -43,6 +40,7 @@ var mathHistory = [];
 var display = (function () {
     var upperDisplayText = '';
     var lowerDisplayText = "0";
+    operatorTextDisplay.textContent = '  '
 
     //#region Upper Display Functions
     function getUpperDisplayTextString() {
@@ -60,6 +58,9 @@ var display = (function () {
     //#endregion
 
     //#region Lower Display Functions
+    function setLowerOperatorText(operation) {
+        operatorTextDisplay.textContent = operatorShortText[operation];
+    }
     function getLowerDisplayTextString() {
         return lowerDisplayText;
     }
@@ -88,6 +89,7 @@ var display = (function () {
         lowerDisplayField.value = lowerDisplayText;
         upperDisplayText = '';
         upperDisplayField.value = upperDisplayText;
+        operatorTextDisplay.textContent = '  '
         console.log(upperDisplayText)
         console.log(lowerDisplayText)
     }
@@ -100,6 +102,7 @@ var display = (function () {
         getUpperDisplayValue,
         updateLowerDisplay,
         clearDisplays,
+        setLowerOperatorText,
     }
 })();
 
@@ -185,14 +188,17 @@ function addOperatorListeners() {
                 value.setNum1(number);
                 currentOperation = operators[e.target.getAttribute('data')];
                 currentOperationText = e.target.getAttribute('data')
+                display.setLowerOperatorText(currentOperationText);
             }
             else {
                 let number = display.getLowerDisplayTextString();
                 display.setUpperDisplayText(value.getRunningTotal());
-                display.updateLowerDisplay();
+                display.updateLowerDisplay(currentOperationText);
                 value.setNum1(value.getRunningTotal());
                 currentOperation = operators[e.target.getAttribute('data')];
                 currentOperationText = e.target.getAttribute('data')
+                console.log(currentOperationText)
+                display.setLowerOperatorText(currentOperationText);
             }
         });
     });

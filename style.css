@@ -5,3 +5,38 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
 }
+.numberKey{
+    font-size: 80px;
+
+}
+.decimalKey{
+    font-size: 80px;
+}
+.clearKey{
+    font-size: 80px;
+}
+
+.display {
+    border: 0px;
+    background-color: aqua;
+}
+#upperDisplay{
+    font-size: 12px;
+}
+#lowerDisplay{
+    font-size: 24px;
+}
+.displayBackground{
+    background-color: aqua;
+    width: 500px;
+    border: 5px;
+}
+#operator{
+    font-size: 60px;
+    width: 125px;
+    margin-bottom: 10px;
+}
+#operatorText{ 
+    width: 10px;
+}
+
