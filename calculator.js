@@ -3,9 +3,11 @@ var runCalc = true;
 var restartCheck = false;
 var firstRun = true;
 var newTotal = 0;
-const numberField = document.querySelector('#inputNumber');
-const buttonAdd = document.querySelector('.add')
-const numberKeys = document.querySelectorAll('.numberKey')
+var currentOperation;
+const lowerDisplayField = document.querySelector('#lowerDisplay');
+const upperDisplayField = document.querySelector('#upperDisplay');
+const buttonAdd = document.querySelector('#add');
+const numberKeys = document.querySelectorAll('.numberKey');
 
 
 //#region =====ENUMS AND MODULES====
@@ -31,33 +33,57 @@ var operatorShortText = {
 
 var mathHistory = [];
 
-var display = (function() {
-    var displayText = "0";
+var display = (function () {
+    var upperDisplayText = '';
+    var lowerDisplayText = "0";
 
-    function getDisplayTextString() {
-        return displayText;
+
+    //#region Upper Display Functions
+    function getUpperDisplayTextString() {
+        return upperDisplayText;
     }
-    function getDisplayTextNumber() {
-        return parseFloat(displayText);
+    function getUpperDisplayValue() {
+        return parseFloat(UpperDisplayText);
     }
 
-    function setDisplayText(number) {
-        if (displayText === "0") {
-            displayText = number;
+    function setUpperDisplayText(number) {
+        upperDisplayText = number;
+        upperDisplayField.value = upperDisplayText;
+        console.log(upperDisplayText)
+    }
+    //#endregion
+
+    //#region Lower Display Functions
+    function getLowerDisplayTextString() {
+        return lowerDisplayText;
+    }
+    function getLowerDisplayValue() {
+        return parseFloat(lowerDisplayText);
+    }
+
+    function setLowerDisplayText(number) {
+        if (lowerDisplayText === "0") {
+            lowerDisplayText = number;
         }
         else {
-            displayText = displayText + number;
-
+            lowerDisplayText = lowerDisplayText + number;
         }
-        console.log(displayText)
-        numberField.value = displayText;
-
+        lowerDisplayField.value = lowerDisplayText;
     }
 
+    function clearLowerDisplay() {
+        lowerDisplayText = '';
+        lowerDisplayField.value = lowerDisplayText;
+    }
+    //#endregion
     return {
-        getDisplayTextString,
-        getDisplayTextNumber,
-        setDisplayText,
+        getLowerDisplayTextString,
+        getLowerDisplayValue,
+        setLowerDisplayText,
+        setUpperDisplayText,
+        getUpperDisplayTextString,
+        getUpperDisplayValue,
+        clearLowerDisplay,
     }
 })();
 
@@ -100,8 +126,20 @@ main();
 function main() {
     numberKeys.forEach(key => {
         key.addEventListener('click', (e) => {
-            display.setDisplayText(e.target.getAttribute('key'))
+            if(!currentOperation){
+            display.setLowerDisplayText(e.target.getAttribute('key'))
+            }
         })
+    });
+
+    buttonAdd.addEventListener('click', (e) => {
+        if (display.getUpperDisplayTextString() == ''){
+        let number = display.getLowerDisplayTextString();
+        display.setUpperDisplayText(number);
+        display.clearLowerDisplay();
+        value.setNum1(number);
+        currentOperation = operators[1];
+        }
     });
 }
 
