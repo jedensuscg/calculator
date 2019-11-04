@@ -4,10 +4,17 @@ var restartCheck = false;
 var firstRun = true;
 var newTotal = 0;
 var currentOperation;
+var currentOperationText;
 const lowerDisplayField = document.querySelector('#lowerDisplay');
 const upperDisplayField = document.querySelector('#upperDisplay');
-const buttonAdd = document.querySelector('#add');
+/* const buttonAdd = document.querySelector('#add');
+const buttonSub = document.querySelector('#sub');
+const buttonMulti = document.querySelector('#multi');
+const buttonDivide = document.querySelector('#divide'); */
+const operatorKeys = document.querySelectorAll('#operator');
 const numberKeys = document.querySelectorAll('.numberKey');
+const decimalKey = document.querySelector('#keyDot');
+const clearKey = document.querySelector('#keyClear');
 
 
 //#region =====ENUMS AND MODULES====
@@ -37,7 +44,6 @@ var display = (function () {
     var upperDisplayText = '';
     var lowerDisplayText = "0";
 
-
     //#region Upper Display Functions
     function getUpperDisplayTextString() {
         return upperDisplayText;
@@ -47,7 +53,8 @@ var display = (function () {
     }
 
     function setUpperDisplayText(number) {
-        upperDisplayText = number;
+        let decimals = countDecimalPlaces(number);
+        upperDisplayText = parseFloat(number).toFixed(decimals);
         upperDisplayField.value = upperDisplayText;
     }
     //#endregion
@@ -70,11 +77,20 @@ var display = (function () {
         lowerDisplayField.value = lowerDisplayText;
     }
 
-    function clearLowerDisplay() {
-        lowerDisplayText = '';
+    function updateLowerDisplay() {
+        lowerDisplayText = '0';
         lowerDisplayField.value = lowerDisplayText;
     }
     //#endregion
+
+    function clearDisplays() {
+        lowerDisplayText = '';
+        lowerDisplayField.value = lowerDisplayText;
+        upperDisplayText = '';
+        upperDisplayField.value = upperDisplayText;
+        console.log(upperDisplayText)
+        console.log(lowerDisplayText)
+    }
     return {
         getLowerDisplayTextString,
         getLowerDisplayValue,
@@ -82,7 +98,8 @@ var display = (function () {
         setUpperDisplayText,
         getUpperDisplayTextString,
         getUpperDisplayValue,
-        clearLowerDisplay,
+        updateLowerDisplay,
+        clearDisplays,
     }
 })();
 
@@ -90,6 +107,12 @@ var value = (function () {
     var runningTotal = 0;
     var num1 = 0;
     var num2 = 0;
+    
+    function resetValues() {
+        runningTotal = 0;
+        num1 = 0;
+        num2 = 0;
+    }
     function setRunningTotal(newNumber) {
         runningTotal = newNumber;
     }
@@ -115,47 +138,89 @@ var value = (function () {
         setNum1,
         getNum2,
         setNum2,
+        resetValues,
     }
 
 })();
 //#endregion
 
-main();
+addOperatorListeners();
+addKeyPadListeners();
 
-function main() {
+function addKeyPadListeners() {
     numberKeys.forEach(key => {
         key.addEventListener('click', (e) => {
-            if(!currentOperation){
-            display.setLowerDisplayText(e.target.getAttribute('key'))
+            if (!currentOperation) {
+                display.setLowerDisplayText(e.target.getAttribute('key'))
             }
             else {
                 display.setLowerDisplayText(e.target.getAttribute('key'))
                 value.setNum2(display.getLowerDisplayValue());
-                value.setRunningTotal(operators[1](value.getNum1(), value.getNum2()));
+                value.setRunningTotal(currentOperation(value.getNum1(), value.getNum2()));
                 display.setUpperDisplayText(value.getRunningTotal())
+                console.log(value.getNum1() + operatorShortText[currentOperationText] + value.getNum2() + " = " + value.getRunningTotal())
             }
         })
-        
     });
 
-    buttonAdd.addEventListener('click', (e) => {
-        if (display.getUpperDisplayTextString() == ''){
-        let number = display.getLowerDisplayTextString();
-        display.setUpperDisplayText(number);
-        display.clearLowerDisplay();
-        value.setNum1(number);
-        currentOperation = operators[1];
+    decimalKey.addEventListener('click', (e) => {
+        decimalTrue = display.getLowerDisplayTextString().includes('.');
+        console.log(decimalTrue)
+        if(!decimalTrue) {
+            display.setLowerDisplayText('.');
         }
-        else {
-            let number = display.getLowerDisplayTextString();
-            display.setUpperDisplayText(value.getRunningTotal());
-            display.clearLowerDisplay();
-            value.setNum1(number);
-            currentOperation = operators[1];
-        }
+    });
+
+
+}
+
+function addOperatorListeners() {
+    operatorKeys.forEach(key => {
+        key.addEventListener('click', (e) => {
+
+            if (display.getUpperDisplayTextString() == '') {
+                var number = display.getLowerDisplayTextString();
+                display.setUpperDisplayText(number);
+                display.updateLowerDisplay();
+                value.setNum1(number);
+                currentOperation = operators[e.target.getAttribute('data')];
+                currentOperationText = e.target.getAttribute('data')
+            }
+            else {
+                let number = display.getLowerDisplayTextString();
+                display.setUpperDisplayText(value.getRunningTotal());
+                display.updateLowerDisplay();
+                value.setNum1(value.getRunningTotal());
+                currentOperation = operators[e.target.getAttribute('data')];
+                currentOperationText = e.target.getAttribute('data')
+            }
+        });
+    });
+    clearKey.addEventListener('click', (e) => {
+        display.clearDisplays();
+        value.resetValues();
+        number = ''
+        currentOperation = undefined;
+        console.log(value.getNum1())
     });
 }
 
+function countDecimalPlaces(number) {
+    let numberString = number + '';
+    if (numberString.includes('.')) {
+        var split = numberString.split('.')
+        var decimals = split[1].length
+        console.log("Decimals" + decimals)
+        if (decimals > 10) {
+            decimals = 10;
+        }
+        return decimals;
+    }
+    else {
+        return 0;
+    }
+
+}
 
 /* 
 function runCalculator(number, operation) {

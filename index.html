@@ -9,7 +9,10 @@
     <input type="text" name="upperDisplay" id="upperDisplay"><br>
     <input type="text" name="lowerDisplay" id="lowerDisplay">
 
-    <input type="button" value="+" id="add">
+    <input type="button" value="+" id="operator" data="1">
+    <input type="button" value="-" id="operator" data="2">
+    <input type="button" value="*" id="operator" data="3">
+    <input type="button" value="/" id="operator" data="4">
     <div class="keyPad">
         <input type="button" value="9" key="9" class="numberKey" id="key9">
         <input type="button" value="8" key="8" class="numberKey" id="key8">
@@ -21,6 +24,8 @@
         <input type="button" value="2" key="2" class="numberKey" id="key2">
         <input type="button" value="1" key="1" class="numberKey" id="key1">
         <input type="button" value="0" key="0" class="numberKey" id="key0">
+        <input type="button" value="." key="." class="decimalKey" id="keyDot">
+        <input type="button" value="CLR" key="clear" class="clearKey" id="keyClear">
     </div>
 
     <span id="total"></span>
