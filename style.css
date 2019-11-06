@@ -23,7 +23,6 @@ background: linear-gradient(185deg, rgba(33,38,66,1) 0%, rgba(53,64,87,1) 4%, rg
     display: grid;
     grid-template-columns: repeat(3, 1fr);
 
-
 }
 .keyPad input[type=button]{
     font-size: 80px;
@@ -32,16 +31,13 @@ background: linear-gradient(185deg, rgba(33,38,66,1) 0%, rgba(53,64,87,1) 4%, rg
     box-shadow: 2px 5px 5px rgb(63, 63, 63), -5px -5px 20px rgb(63, 63, 63) inset;
 
 }
+/*#region====DISPLAY====*/
 .displaySpan{
     width: 500px;
     border: 0px;
     background-color: lightblue;
     text-align: right;
     height: 50px;
-}
-
-.display#lowerDisplay {
-    margin-left: 5px;
 }
 
 #operatorText{ 
@@ -54,7 +50,6 @@ background: linear-gradient(185deg, rgba(33,38,66,1) 0%, rgba(53,64,87,1) 4%, rg
 #lowerDisplay{
     font-size: 48px;
 }
-
 #errorText{
     position: relative;
     right: 70px;
@@ -62,24 +57,28 @@ background: linear-gradient(185deg, rgba(33,38,66,1) 0%, rgba(53,64,87,1) 4%, rg
     color: red;
     font-size: 40px;
 }
+/*#endregion*/
 
-
+/*#region====OPERATOR BUTTONS====*/
 #operatorContainer{
     display: flex;
     width: 500px;
     justify-content: space-between;
     margin-top: 5px;
 }
-#operatorContainer input[type=button]{
+#operatorContainer input{
     font-size: 60px;
+    vertical-align: middle;
+    font-weight: bolder;
     width: 90px;
     margin-bottom: 10px;
-    color: blue;
+    color: black;
     box-shadow: 2px 5px 5px rgb(63, 63, 63), 0px -5px 10px rgb(63, 63, 63) inset;
 }
 #operatorContainer input[value=CLR]{
     font-size: 35px;
 }
+/*#endregion*/
 
 #historyTest{
     position: absolute;
