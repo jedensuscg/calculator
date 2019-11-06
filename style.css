@@ -1,42 +1,88 @@
+#calculator{
+    position: relative;
+    padding: 0px;
+    width: 100%;
+    margin: auto;
 
+}
+
+.wrapper{
+    width: 500px;
+    margin: auto;
+    padding: 20px;
+    background: rgb(33,38,66);
+background: linear-gradient(185deg, rgba(33,38,66,1) 0%, rgba(53,64,87,1) 4%, rgba(113,145,152,1) 93%, rgba(67,102,110,1) 100%);
+    border: rgb(44, 44, 44);
+    border-style: solid;
+    border-width: 10px;
+    border-radius: 10px;
+}
 .keyPad{
     width: 500px;
     height: 500px;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-}
-.numberKey{
-    font-size: 80px;
+
 
 }
-.decimalKey{
+.keyPad input[type=button]{
     font-size: 80px;
-}
-.clearKey{
-    font-size: 80px;
-}
+    border-radius: 50px;
+    margin: 5px;
+    box-shadow: 2px 5px 5px rgb(63, 63, 63), -5px -5px 20px rgb(63, 63, 63) inset;
 
-.display {
+}
+.displaySpan{
+    width: 500px;
     border: 0px;
-    background-color: aqua;
+    background-color: lightblue;
+    text-align: right;
+    height: 50px;
 }
+
+.display#lowerDisplay {
+    margin-left: 5px;
+}
+
+#operatorText{ 
+    font-size: 30px;
+}
+
 #upperDisplay{
-    font-size: 12px;
+    font-size: 15px;
 }
 #lowerDisplay{
-    font-size: 24px;
+    font-size: 48px;
 }
-.displayBackground{
-    background-color: aqua;
+
+#errorText{
+    position: relative;
+    right: 70px;
+    text-align: left;
+    color: red;
+    font-size: 40px;
+}
+
+
+#operatorContainer{
+    display: flex;
     width: 500px;
-    border: 5px;
+    justify-content: space-between;
+    margin-top: 5px;
 }
-#operator{
+#operatorContainer input[type=button]{
     font-size: 60px;
-    width: 125px;
+    width: 90px;
     margin-bottom: 10px;
+    color: blue;
+    box-shadow: 2px 5px 5px rgb(63, 63, 63), 0px -5px 10px rgb(63, 63, 63) inset;
 }
-#operatorText{ 
-    width: 10px;
+#operatorContainer input[value=CLR]{
+    font-size: 35px;
 }
+
+#historyTest{
+    position: absolute;
+}
+
 
