@@ -11,7 +11,7 @@
     margin: auto;
     padding: 20px;
     background: rgb(33,38,66);
-background: linear-gradient(185deg, rgba(33,38,66,1) 0%, rgba(53,64,87,1) 4%, rgba(113,145,152,1) 93%, rgba(67,102,110,1) 100%);
+    background: linear-gradient(185deg, rgba(33,38,66,1) 0%, rgba(53,64,87,1) 4%, rgba(113,145,152,1) 93%, rgba(67,102,110,1) 100%);
     border: rgb(44, 44, 44);
     border-style: solid;
     border-width: 10px;
@@ -29,13 +29,21 @@ background: linear-gradient(185deg, rgba(33,38,66,1) 0%, rgba(53,64,87,1) 4%, rg
     border-radius: 50px;
     margin: 5px;
     box-shadow: 2px 5px 5px rgb(63, 63, 63), -5px -5px 20px rgb(63, 63, 63) inset;
+}
 
+.keyPad input[type=button]:active{
+    transform: translateY(2px);
+    color: red;
 }
 /*#region====DISPLAY====*/
+
+.displayBackground {
+    box-shadow: 5px 5px 2px rgb(36, 35, 35) inset, -2px -2px 1px inset, 10px 10px 10px rgba(0, 0, 0, 0.342) inset, -5px -5px 5px rgba(0, 0, 0, 0.342) inset;
+    background-color: lightblue;
+}
 .displaySpan{
     width: 500px;
     border: 0px;
-    background-color: lightblue;
     text-align: right;
     height: 50px;
 }
