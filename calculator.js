@@ -22,17 +22,13 @@ var operators = {
     3: multiply,
     4: divide,
 }
-
 var operatorShortText = {
     1: "+",
     2: "-",
-    3: "*",
-    4: "/",
+    3: "\xD7",
+    4: "\xF7",
 }
-
-// Contains all functions and variables for the Display
-var display = (function () {
-    
+var display = (function () { // Contains all functions and variables for the Display
     var upperDisplayText = '';
     var lowerDisplayText = "0";
     var errorText = '';
@@ -83,7 +79,7 @@ var display = (function () {
     }
 
     function updateLowerDisplay() {
-        lowerDisplayText = '0';
+        lowerDisplayText = '';
         lowerDisplayField.textContent = lowerDisplayText;
     }
     //#endregion
@@ -95,8 +91,9 @@ var display = (function () {
         lowerDisplayField.textContent = lowerDisplayText;
         upperDisplayText = '';
         upperDisplayField.textContent = upperDisplayText;
-        operatorTextDisplay.textContent = '  ';
+        operatorTextDisplay.textContent = '';
         historySpan.textContent = '';
+        equalHit = false;
     }
 
     function equalDisplay() {
@@ -104,7 +101,7 @@ var display = (function () {
         upperDisplayField.textContent = '';
         console.log(mathHistory)
         lowerDisplayField.textContent = value.getRunningTotal();
-        operatorTextDisplay.textContent = ' ';
+        operatorTextDisplay.textContent = '';
         let newHistory = updateHistory(true) + '=' + value.getRunningTotal();
         console.log(mathHistory)
         console.log(newHistory)
@@ -126,9 +123,7 @@ var display = (function () {
         setErrorText,
     }
 })();
-
-// Contains all the functions and variables for number input/output
-var value = (function () {
+var value = (function () { // Contains all the functions and variables for number input/output
     var runningTotal = 0;
     var num1 = 0;
     var num2 = 0;
@@ -186,17 +181,14 @@ function addKeyPadListeners() {
             }
         })
     });
-
-    
 }
 
 function addOperatorListeners() {
     operatorKeys.forEach(key => {
         key.addEventListener('click', (e) => {
 
-            if (display.getUpperDisplayTextString() == '') {
-                var number = display.getLowerDisplayTextString();
-                console.log(number)
+           var number = (display.getUpperDisplayTextString() == '') ? display.getLowerDisplayTextString() : value.getRunningTotal()
+
                 if (number != '0') {
                     display.setUpperDisplayText(number);
                     value.setNum1(number);
@@ -204,36 +196,24 @@ function addOperatorListeners() {
                     currentOperation = operators[e.target.getAttribute('data')];
                     currentOperationText = e.target.getAttribute('data')
 
-
-                    mathHistory.push(display.getLowerDisplayTextString(), ' ', operatorShortText[currentOperationText], ' ');
-                    display.updateLowerDisplay();
-
-
+                    if (!equalHit) {
+                        mathHistory.push(display.getLowerDisplayTextString(),operatorShortText[currentOperationText]);
+                    }
+                    else {
+                        mathHistory.push('', operatorShortText[currentOperationText]);
+                        equalHit = false;
+                    }
                     currentOperation = operators[e.target.getAttribute('data')];
                     currentOperationText = e.target.getAttribute('data')
 
+                    display.updateLowerDisplay();
                     display.setLowerOperatorText(currentOperationText);
                     historySpan.textContent = updateHistory();
                 }
-            }
-            else {
-                display.setUpperDisplayText(value.getRunningTotal());
-                currentOperation = operators[e.target.getAttribute('data')];
-                currentOperationText = e.target.getAttribute('data')
+                console.log(mathHistory)
+                console.log(updateHistory().toString())
 
-                if (!equalHit) {
-                    mathHistory.push(display.getLowerDisplayTextString(), ' ', operatorShortText[currentOperationText], ' ');
-                }
-                else {
-                    mathHistory.push(' ', operatorShortText[currentOperationText], ' ');
-                    equalHit = false;
-                }
-
-                display.updateLowerDisplay(currentOperationText);
-                value.setNum1(value.getRunningTotal());
-                display.setLowerOperatorText(currentOperationText);
-                historySpan.textContent = updateHistory();
-            }
+               // display.updateLowerDisplay(currentOperationText);
         });
     });
     clearKey.addEventListener('click', (e) => {
@@ -241,6 +221,7 @@ function addOperatorListeners() {
         value.resetValues();
         number = ''
         currentOperation = undefined;
+        console.log(mathHistory)
 
     });
     equalKey.addEventListener('click', (e) => {
@@ -260,9 +241,8 @@ function addOperatorListeners() {
 }
 
 function countDecimalPlaces(number) {
-    let numberString = number + '';
-    if (numberString.includes('.')) {
-        var split = numberString.split('.')
+    if (number.toString().includes('.')) {
+        var split = number.toString().split('.')
         var decimals = split[1].length
 
         if (decimals > 10) {
@@ -273,7 +253,6 @@ function countDecimalPlaces(number) {
     else {
         return 0;
     }
-
 }
 
 function updateHistory(finished = false) {
@@ -282,10 +261,8 @@ function updateHistory(finished = false) {
     let historyPartial = mathHistory.slice();
     if (!finished) {
         historyPartial.pop();
-        historyPartial.pop();
-        historyPartial.push(' = ');
+        historyPartial.push('=');
     }
-
     return historyPartial.join('');
 }
 

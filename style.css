@@ -25,7 +25,7 @@
 
 }
 .keyPad input[type=button]{
-    font-size: 80px;
+    font-size: 60pt;
     border-radius: 50px;
     margin: 5px;
     box-shadow: 2px 5px 5px rgb(63, 63, 63), -5px -5px 20px rgb(63, 63, 63) inset;
@@ -40,23 +40,36 @@
 .displayBackground {
     box-shadow: 5px 5px 2px rgb(36, 35, 35) inset, -2px -2px 1px inset, 10px 10px 10px rgba(0, 0, 0, 0.342) inset, -5px -5px 5px rgba(0, 0, 0, 0.342) inset;
     background-color: lightblue;
+    font-family: 'Share Tech Mono', monospace;
+    color: rgb(54, 54, 54);
 }
 .displaySpan{
-    width: 500px;
+    width: 490px;
     border: 0px;
     text-align: right;
     height: 50px;
 }
 
+#historySpan {
+    font-size: 22pt;
+}
 #operatorText{ 
-    font-size: 30px;
+    font-size: 40pt;
 }
 
 #upperDisplay{
-    font-size: 15px;
+    font-size: 22pt;
+}
+
+#upperSpan {
+    padding-top: 10px;
+    height: 40px;
+}
+#lowerSpan{
+    padding-bottom: 5px;
 }
 #lowerDisplay{
-    font-size: 48px;
+    font-size: 40pt;
 }
 #errorText{
     position: relative;
@@ -88,8 +101,5 @@
 }
 /*#endregion*/
 
-#historyTest{
-    position: absolute;
-}
 
 
