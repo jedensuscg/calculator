@@ -32,6 +32,7 @@ var display = (function () { // Contains all functions and variables for the Dis
     var upperDisplayText = '';
     var lowerDisplayText = "0";
     var errorText = '';
+    var decimals;
 
     operatorTextDisplay.textContent = '  '
 
@@ -44,7 +45,7 @@ var display = (function () { // Contains all functions and variables for the Dis
     }
 
     function setUpperDisplayText(number) {
-        let decimals = countDecimalPlaces(number);
+        decimals = countDecimalPlaces(number);
         upperDisplayText = parseFloat(number).toFixed(decimals);
         upperDisplayField.textContent = upperDisplayText;
     }
@@ -70,12 +71,12 @@ var display = (function () { // Contains all functions and variables for the Dis
 
         }
         lowerDisplayField.textContent = lowerDisplayText;
-
     }
 
     function setErrorText(error) {
         errorText = error;
         errorTextField.textContent = errorText;
+        console.log(errorText)
     }
 
     function updateLowerDisplay() {
@@ -94,15 +95,17 @@ var display = (function () { // Contains all functions and variables for the Dis
         operatorTextDisplay.textContent = '';
         historySpan.textContent = ''
         equalHit = false;
+        errorText = '';
+        errorTextField.textContent = errorText;
     }
 
     function equalDisplay() {
         equalHit = true;
         upperDisplayField.textContent = '';
         console.log(mathHistory)
-        lowerDisplayField.textContent = value.getRunningTotal();
+        lowerDisplayField.textContent = value.getRunningTotal().toFixed(decimals);
         operatorTextDisplay.textContent = '';
-        let newHistory = updateHistory(true) + '=' + value.getRunningTotal();
+        let newHistory = updateHistory(true) + '=' + value.getRunningTotal().toFixed(decimals);
         console.log(mathHistory)
         console.log(newHistory)
         historySpan.textContent = newHistory
@@ -170,15 +173,27 @@ addKeyPadListeners();
 function addKeyPadListeners() {
     numberKeys.forEach(key => {
         key.addEventListener('click', (e) => {
-            if (!currentOperation) {
-                display.setLowerDisplayText(e.target.getAttribute('key'))
+            if (display.getUpperDisplayTextString() == '' && e.target.getAttribute('key') == "0" && display.getLowerDisplayTextString() == "") {
+                display.setErrorText("Can't Start with 0");
+            }
+            else if (currentOperationText == "4" && e.target.getAttribute('key') == "0" && display.getLowerDisplayTextString() == '') {
+                display.setErrorText("Can't Divide By Zero!")
+                console.log(display.getLowerDisplayTextString())
             }
             else {
-                display.setLowerDisplayText(e.target.getAttribute('key'))
-                value.setNum2(display.getLowerDisplayValue());
-                value.setRunningTotal(currentOperation(value.getNum1(), value.getNum2()));
-                display.setUpperDisplayText(value.getRunningTotal());
+                if (!currentOperation) {
+                    display.setLowerDisplayText(e.target.getAttribute('key'));
+                    display.setErrorText('');
+                }
+                else {
+                    display.setErrorText('');
+                    display.setLowerDisplayText(e.target.getAttribute('key'))
+                    value.setNum2(display.getLowerDisplayValue());
+                    value.setRunningTotal(currentOperation(value.getNum1(), value.getNum2()));
+                    display.setUpperDisplayText(value.getRunningTotal());
+                }
             }
+
         })
     });
 }
@@ -187,33 +202,36 @@ function addOperatorListeners() {
     operatorKeys.forEach(key => {
         key.addEventListener('click', (e) => {
 
-           var number = (display.getUpperDisplayTextString() == '') ? display.getLowerDisplayTextString() : value.getRunningTotal()
+            var number = (display.getUpperDisplayTextString() == '') ? display.getLowerDisplayTextString() : value.getRunningTotal()
 
-                if (number != '0') {
-                    display.setUpperDisplayText(number);
-                    value.setNum1(number);
+            if (display.getUpperDisplayTextString().includes("NaN")) {
+                display.setErrorText("Divide by");
+            }
+            else if (number != '0') {
+                display.setUpperDisplayText(number);
+                value.setNum1(number);
 
-                    currentOperation = operators[e.target.getAttribute('data')];
-                    currentOperationText = e.target.getAttribute('data')
+                currentOperation = operators[e.target.getAttribute('data')];
+                currentOperationText = e.target.getAttribute('data')
 
-                    if (!equalHit) {
-                        mathHistory.push(display.getLowerDisplayTextString(),operatorShortText[currentOperationText]);
-                    }
-                    else {
-                        mathHistory.push('', operatorShortText[currentOperationText]);
-                        equalHit = false;
-                    }
-                    currentOperation = operators[e.target.getAttribute('data')];
-                    currentOperationText = e.target.getAttribute('data')
-
-                    display.updateLowerDisplay();
-                    display.setLowerOperatorText(currentOperationText);
-                    historySpan.textContent = updateHistory();
+                if (!equalHit) {
+                    mathHistory.push(display.getLowerDisplayTextString(), operatorShortText[currentOperationText]);
                 }
-                console.log(mathHistory)
-                console.log(updateHistory().toString())
+                else {
+                    mathHistory.push('', operatorShortText[currentOperationText]);
+                    equalHit = false;
+                }
+                currentOperation = operators[e.target.getAttribute('data')];
+                currentOperationText = e.target.getAttribute('data')
 
-               // display.updateLowerDisplay(currentOperationText);
+                display.updateLowerDisplay();
+                display.setLowerOperatorText(currentOperationText);
+                historySpan.textContent = updateHistory();
+            }
+            console.log(mathHistory)
+            console.log(updateHistory().toString())
+
+            // display.updateLowerDisplay(currentOperationText);
         });
     });
     clearKey.addEventListener('click', (e) => {

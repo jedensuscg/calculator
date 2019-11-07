@@ -74,9 +74,10 @@
 #errorText{
     position: relative;
     right: 70px;
+    bottom: 10px;
     text-align: left;
     color: red;
-    font-size: 40px;
+    font-size: 24pt;
 }
 /*#endregion*/
 
