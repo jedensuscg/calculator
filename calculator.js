@@ -92,7 +92,7 @@ var display = (function () { // Contains all functions and variables for the Dis
         upperDisplayText = '';
         upperDisplayField.textContent = upperDisplayText;
         operatorTextDisplay.textContent = '';
-        historySpan.textContent = '';
+        historySpan.textContent = ''
         equalHit = false;
     }
 
