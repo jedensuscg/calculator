@@ -1,5 +1,6 @@
 var dividedByZero = false;
 var equalHit = false;
+var memoryMode = false;
 var mathHistory = [];
 var currentOperation;
 var currentOperationText;
@@ -13,6 +14,8 @@ const clearKey = document.querySelector('#keyClear');
 const equalKey = document.querySelector('#keyEqual');
 const historySpan = document.querySelector('#historySpan');
 const errorTextField = document.querySelector('#errorText');
+const memoryButtons = document.querySelectorAll('.memoryButton');
+const memoryIndicators = document.querySelectorAll('.memoryIndicator');
 
 
 //#region =====ENUMS AND MODULES====
@@ -28,6 +31,58 @@ var operatorShortText = {
     3: "\xD7",
     4: "\xF7",
 }
+
+var memory = (function () {
+    // use \u25BE for arrow
+    var memory1 = '';
+    var memory2 = '';
+    var memory3 = '';
+    var memoryPosition = '';
+
+    function setMemory(value, memoryPosition) {
+        switch (memoryPosition) {
+            case '1':
+                memory1 = value;
+                break;
+            case '2':
+                memory2 = value;
+                break;
+            case '3':
+                memory3 = value;
+                break;
+            default:
+        }
+    }
+
+    function setMemoryPosition(position) {
+        memoryPosition = position;
+    }
+
+    function getMemoryPosition() {
+        return memoryPosition;
+    }
+    function getMemory(memoryPosition) {
+        switch (memoryPosition) {
+            case '1':
+                return memory1;
+            case '2':
+                return memory2
+            case '3':
+                return memory3
+            default:
+        }
+    }
+
+    return {
+        getMemory,
+        setMemory,
+        setMemoryPosition,
+        getMemoryPosition,
+    }
+
+})();
+
+
 var display = (function () { // Contains all functions and variables for the Display
     var upperDisplayText = '';
     var lowerDisplayText = "0";
@@ -130,6 +185,7 @@ var value = (function () { // Contains all the functions and variables for numbe
     var runningTotal = 0;
     var num1 = 0;
     var num2 = 0;
+    var userResponseKey = '';
 
     function resetValues() {
         runningTotal = 0;
@@ -154,6 +210,15 @@ var value = (function () { // Contains all the functions and variables for numbe
     function setNum2(number) {
         num2 = number;
     }
+
+    function setUserResponseKey(input) {
+        userResponseKey = input;
+    }
+
+    function getUserReponseKey() {
+        return userResponseKey;
+    }
+
     return {
         getRunningTotal,
         setRunningTotal,
@@ -161,6 +226,8 @@ var value = (function () { // Contains all the functions and variables for numbe
         setNum1,
         getNum2,
         setNum2,
+        getUserReponseKey,
+        setUserResponseKey,
         resetValues,
     }
 
@@ -169,32 +236,52 @@ var value = (function () { // Contains all the functions and variables for numbe
 
 addOperatorListeners();
 addKeyPadListeners();
+addMemoryButtonListeners();
 
 function addKeyPadListeners() {
     numberKeys.forEach(key => {
         key.addEventListener('click', (e) => {
-            if (display.getUpperDisplayTextString() == '' && e.target.getAttribute('key') == "0" && display.getLowerDisplayTextString() == "") {
-                display.setErrorText("Can't Start with 0");
-            }
-            else if (currentOperationText == "4" && e.target.getAttribute('key') == "0" && display.getLowerDisplayTextString() == '') {
-                display.setErrorText("Can't Divide By Zero!")
-                console.log(display.getLowerDisplayTextString())
-            }
-            else {
-                if (!currentOperation) {
-                    display.setLowerDisplayText(e.target.getAttribute('key'));
-                    display.setErrorText('');
+            if (!memoryMode) {
+                if (display.getUpperDisplayTextString() == '' && e.target.getAttribute('key') == "0" && display.getLowerDisplayTextString() == "") {
+                    display.setErrorText("Can't Start with 0");
+                }
+                else if (currentOperationText == "4" && e.target.getAttribute('key') == "0" && display.getLowerDisplayTextString() == '') {
+                    display.setErrorText("Can't Divide By Zero!")
+                    console.log(display.getLowerDisplayTextString())
                 }
                 else {
-                    display.setErrorText('');
-                    display.setLowerDisplayText(e.target.getAttribute('key'))
-                    value.setNum2(display.getLowerDisplayValue());
-                    value.setRunningTotal(currentOperation(value.getNum1(), value.getNum2()));
-                    display.setUpperDisplayText(value.getRunningTotal());
+                    if (!currentOperation) {
+                        if (e.target.getAttribute('key') == "0") {
+                            display.setErrorText("Can't Start with 0");
+                        }
+
+                        else {
+                            display.setLowerDisplayText(e.target.getAttribute('key'));
+                            display.setErrorText('');
+                        }
+
+                    }
+                    else {
+                        display.setErrorText('');
+                        display.setLowerDisplayText(e.target.getAttribute('key'))
+                        value.setNum2(display.getLowerDisplayValue());
+                        value.setRunningTotal(currentOperation(value.getNum1(), value.getNum2()));
+                        display.setUpperDisplayText(value.getRunningTotal());
+                    }
                 }
             }
+            else {
+                if (e.target.getAttribute('key') == '1') {
+                    storeToMemory(value.getRunningTotal(), memory.getMemoryPosition())
 
+                }
+                else if (e.target.getAttribute('key') == '2') {
+                    memoryMode = false;
+
+                }
+            }
         })
+
     });
 }
 
@@ -207,7 +294,7 @@ function addOperatorListeners() {
             if (display.getUpperDisplayTextString().includes("NaN")) {
                 display.setErrorText("Divide by");
             }
-            else if (number != '0') {
+            else if (number != '0' || equalHit) {
                 display.setUpperDisplayText(number);
                 value.setNum1(number);
 
@@ -258,6 +345,17 @@ function addOperatorListeners() {
     });
 }
 
+function addMemoryButtonListeners() {
+    memoryButtons.forEach(button => {
+        button.addEventListener('click', (e) => {
+            memoryMode = true;
+            let buttonClicked = e.target.getAttribute('data')
+            let valueToStore = value.getRunningTotal();
+            memory.setMemoryPosition(buttonClicked);
+            validateMemory(buttonClicked, valueToStore);
+        })
+    })
+}
 function countDecimalPlaces(number) {
     if (number.toString().includes('.')) {
         var split = number.toString().split('.')
@@ -283,6 +381,31 @@ function updateHistory(finished = false) {
     }
     return historyPartial.join('');
 }
+
+function validateMemory(position, number) {
+    numberKeys[0].value = 'STORE';
+    numberKeys[0].classList.remove('memOff')
+    numberKeys[0].classList.add('memoryMode')
+    if (number) {
+        if (memory.getMemory(position)) {
+            console.log("Memory Position Filled: Select Use, Overwrite Cancel")
+        }
+
+        else {
+            storeToMemory(number, position)
+        }
+    }
+}
+
+function storeToMemory(number, position) {
+    console.log("memory value " + number)
+    console.log("memory position " + position)
+    memory.setMemory(number, position)
+    console.log("Setting Memory")
+    memoryMode = false;
+
+}
+
 
 //#region =====FORMULAS=====
 function add(num1 = 0, num2 = 0) {

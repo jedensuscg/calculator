@@ -25,10 +25,13 @@
 
 }
 .keyPad input[type=button]{
-    font-size: 60pt;
     border-radius: 50px;
     margin: 5px;
     box-shadow: 2px 5px 5px rgb(63, 63, 63), -5px -5px 20px rgb(63, 63, 63) inset;
+}
+
+.memOff{
+    font-size: 60pt;
 }
 
 .keyPad input[type=button]:active{
@@ -37,7 +40,24 @@
 }
 /*#region====DISPLAY====*/
 
+/*#region====MEMORY BUTTONS====*/
+#memoryContainer {
+    width: 50%;
+    display: flex;
+    justify-content: space-around;
+}
+
+.memoryButton{
+    margin: 2px;
+    width: 60px;
+    height: 35px;
+    border-radius: 40%;
+}
+
+/*#endregion*/
+
 .displayBackground {
+    position: relative;
     box-shadow: 5px 5px 2px rgb(36, 35, 35) inset, -2px -2px 1px inset, 10px 10px 10px rgba(0, 0, 0, 0.342) inset, -5px -5px 5px rgba(0, 0, 0, 0.342) inset;
     background-color: lightblue;
     font-family: 'Share Tech Mono', monospace;
@@ -78,6 +98,19 @@
     text-align: left;
     color: red;
     font-size: 24pt;
+}
+
+#memoryIndContainer {
+    display: flex;
+    width: 50%;
+    justify-content: space-around;
+    position: absolute;
+    bottom: 6px;
+}
+
+.memoryMode {
+    font-size: 15pt;
+    color: red;
 }
 /*#endregion*/
 
