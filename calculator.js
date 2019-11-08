@@ -263,8 +263,8 @@ function countDecimalPlaces(number) {
         var split = number.toString().split('.')
         var decimals = split[1].length
 
-        if (decimals > 10) {
-            decimals = 10;
+        if (decimals > 5) {
+            decimals = 5;
         }
         return decimals;
     }
