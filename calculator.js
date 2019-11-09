@@ -5,6 +5,7 @@ var operSelected = false;
 var mathHistory = [];
 var currentOperation;
 var currentOperationText;
+var darkMode = false;
 const lowerDisplayField = document.querySelector('#lowerDisplay');
 const upperDisplayField = document.querySelector('#upperDisplay');
 const operatorTextDisplay = document.querySelector('#operatorText');
@@ -18,6 +19,8 @@ const errorTextField = document.querySelector('#errorText');
 const memoryButtons = document.querySelectorAll('.memoryButton');
 const memoryIndicators = document.querySelectorAll('.memoryIndicator');
 const clearMemoryButton = document.querySelector('.clearMemoryButton')
+const toggleLightButton = document.querySelector('#toggleLight');
+const styleLink = document.querySelector('#style');
 
 
 //#region =====ENUMS AND MODULES====
@@ -328,6 +331,10 @@ function addKeyPadListeners() {
         })
 
     });
+
+    toggleLightButton.addEventListener('click', () => {
+        swapStyle();
+    });
 }
 
 function addOperatorListeners() {
@@ -489,6 +496,16 @@ function storeToMemory(number, position) {
     memory.setMemory(number, position)
 }
 
+function swapStyle() {
+    if(!darkMode) {
+        styleLink.setAttribute('href', "darkstyle.css")
+        darkMode = true;
+    }
+    else if (darkMode) {
+        styleLink.setAttribute('href', "style.css")
+        darkMode = false;
+    }
+}
 
 //#region =====FORMULAS=====
 function add(num1 = 0, num2 = 0) {

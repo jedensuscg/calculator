@@ -1,5 +1,5 @@
 body {
-    background-color: white;
+    background-color: black;
 }
 
 
@@ -39,6 +39,7 @@ body {
 }
 .keyPad input[type=button]{
     border-radius: 50px;
+    background-color: rgb(92, 91, 91);
     margin: 5px;
     box-shadow: 2px 5px 5px rgb(63, 63, 63), -5px -5px 20px rgb(63, 63, 63) inset;
     height: 110px;
@@ -68,7 +69,7 @@ body {
     width: 60px;
     height: 35px;
     border-radius: 40%;
-
+    background-color: rgb(92, 91, 91);
     font-weight: bolder;
     color: black;
     box-shadow: 2px 5px 5px rgb(63, 63, 63), 0px -5px 10px rgb(63, 63, 63) inset;
@@ -96,7 +97,7 @@ body {
 .displayBackground {
     position: relative;
     box-shadow: 5px 5px 2px rgb(36, 35, 35) inset, -2px -2px 1px inset, 10px 10px 10px rgba(0, 0, 0, 0.342) inset, -5px -5px 5px rgba(0, 0, 0, 0.342) inset;
-    background-color: lightblue;
+    background-color: lightyellow;
     font-family: 'Share Tech Mono', monospace;
     color: rgb(54, 54, 54);
 }
@@ -175,6 +176,7 @@ body {
     width: 90px;
     margin-bottom: 10px;
     color: black;
+    background-color: rgb(92, 91, 91);
     box-shadow: 2px 5px 5px rgb(63, 63, 63), 0px -5px 10px rgb(63, 63, 63) inset;
     text-shadow: 2px 2px rgb(107, 106, 106), -1px -1px white, 1px -1px darkgray, -2px 2px darkgray
 }

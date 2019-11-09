@@ -2,14 +2,16 @@
 
 <head>
     <script src="calculator.js" async></script>
-    <link rel="stylesheet" type="text/css" href="style.css">
+    <link id="style" rel="stylesheet" type="text/css" href="style.css">
     <link href="https://fonts.googleapis.com/css?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
 </head>
 <body ontouchstart>
     
 <main #calculator>
+
     <div class="wrapper">
+            <input type="button" id="toggleLight" value="TOGGLE LIGHT">
     <div class="displayBackground">
         <div id="upperSpan" class="displaySpan">
             <span id="historySpan"></span>
@@ -43,7 +45,7 @@
         <input type="button" value="&minus;" id="operator" data="2">
         <input type="button" value="&times;" id="operator" data="3">
         <input type="button" value="&divide;" id="operator" data="4">
-        <input type="button" value="CLR" key="clear" class="clearKey" id="keyClear">
+        <input type="button" value="AC" key="clear" class="clearKey" id="keyClear">
     </div>
 
     <div class="keyPad">
