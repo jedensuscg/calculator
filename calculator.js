@@ -3,8 +3,8 @@ var equalHit = false;
 var memoryMode = false;
 var operSelected = false;
 var mathHistory = [];
-var currentOperation;
-var currentOperationText;
+var currentOperation ='';
+var currentOperationText = '';
 var darkMode = false;
 const lowerDisplayField = document.querySelector('#lowerDisplay');
 const upperDisplayField = document.querySelector('#upperDisplay');
@@ -148,7 +148,6 @@ var display = (function () { // Contains all functions and variables for the Dis
     function setErrorText(error) {
         errorText = error;
         errorTextField.textContent = errorText;
-        console.log(errorText)
     }
 
     function updateLowerDisplay() {
@@ -178,12 +177,9 @@ var display = (function () { // Contains all functions and variables for the Dis
     function equalDisplay() {
         equalHit = true;
         upperDisplayField.textContent = '';
-        console.log(mathHistory)
         lowerDisplayField.textContent = value.getRunningTotal().toFixed(decimals);
         operatorTextDisplay.textContent = '';
         let newHistory = updateHistory(true) + '=' + value.getRunningTotal().toFixed(decimals);
-        console.log(mathHistory)
-        console.log(newHistory)
         historySpan.textContent = newHistory
     }
     //#endregion
@@ -268,7 +264,6 @@ function addKeyPadListeners() {
                 }
                 else if (currentOperationText == "4" && e.target.getAttribute('key') == "0" && display.getLowerDisplayTextString() == '') {
                     display.setErrorText("Can't Divide By Zero!")
-                    console.log(display.getLowerDisplayTextString())
                 }
                 else {
                     if (!currentOperation) {
@@ -340,13 +335,11 @@ function addKeyPadListeners() {
 function addOperatorListeners() {
     operatorKeys.forEach(key => {
         key.addEventListener('click', (e) => {
+            var firstRun
             display.setErrorText("")
             var number = (display.getUpperDisplayTextString() == '') ? display.getLowerDisplayTextString() : value.getRunningTotal()
-
-            if (display.getUpperDisplayTextString() == '' && display.getLowerDisplayTextString() == '') {
-                display.setErrorText("Divide by");
-            }
-            else if (number != '0' || equalHit) {
+            keyHit = e;
+            if (number != '0' || equalHit) {
                 display.setUpperDisplayText(number);
                 value.setNum1(number);
 
@@ -355,30 +348,38 @@ function addOperatorListeners() {
 
                 if (!equalHit) {
                         mathHistory.push(display.getLowerDisplayTextString(), operatorShortText[currentOperationText]);
+
                 }
                 else {
+
                     mathHistory.push('', operatorShortText[currentOperationText]);
                     equalHit = false;
                 }
-
-
-
-
             }
+
             if(operSelected) {
                 console.log('op Sel')
                 currentOperation = operators[e.target.getAttribute('data')];
                 currentOperationText = e.target.getAttribute('data')
                 mathHistory.pop()
                 mathHistory.push(operatorShortText[currentOperationText])
+                display.updateLowerDisplay();
+                display.setLowerOperatorText(currentOperationText);
+                historySpan.textContent = updateHistory();
             }
-            console.log(updateHistory().toString())
-            console.log(operSelected)
+            if(!operSelected) {
+                    currentOperation = operators[e.target.getAttribute('data')];
+                    currentOperationText = e.target.getAttribute('data')
+                    display.updateLowerDisplay();
+                    display.setLowerOperatorText(currentOperationText);
+                    historySpan.textContent = updateHistory();
+                    operSelected = true; 
+                
+            }
 
-            display.updateLowerDisplay();
-            display.setLowerOperatorText(currentOperationText);
-            historySpan.textContent = updateHistory();
-            operSelected = true; 
+
+
+
         });
     });
     clearKey.addEventListener('click', (e) => {
@@ -413,9 +414,6 @@ function addMemoryButtonListeners() {
     memoryButtons.forEach(button => {
         button.addEventListener('click', (e) => {
             let buttonClicked = e.target.getAttribute('data')
-            console.log(memory.getMemory(1))
-            console.log(memory.getMemory(2))
-            console.log(memory.getMemory(3))
             if (!clearMemory) {
                 memoryMode = true;
                 setMemoryKeys(true);
