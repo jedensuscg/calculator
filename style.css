@@ -106,6 +106,10 @@
     padding-top: 10px;
     height: 40px;
 }
+
+#middleSpan {
+    height: 20px;
+}
 #lowerSpan{
     padding-bottom: 5px;
 }
@@ -114,7 +118,7 @@
 }
 #errorText{
     position: relative;
-    right: 80px;
+    left: 5px;
     bottom: 10px;
     text-align: left;
     color: red;

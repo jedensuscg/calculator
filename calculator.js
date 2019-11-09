@@ -149,8 +149,12 @@ var display = (function () { // Contains all functions and variables for the Dis
     }
 
     function updateLowerDisplay() {
-        lowerDisplayText = '0';
+        lowerDisplayText = '';
         lowerDisplayField.textContent = lowerDisplayText;
+    }
+
+    function getDecimal() {
+        return decimals;
     }
     //#endregion
 
@@ -193,6 +197,7 @@ var display = (function () { // Contains all functions and variables for the Dis
         setLowerOperatorText,
         equalDisplay,
         setErrorText,
+        getDecimal,
     }
 })();
 var value = (function () { // Contains all the functions and variables for number input/output
@@ -247,7 +252,6 @@ var value = (function () { // Contains all the functions and variables for numbe
 
 })();
 //#endregion
-display.lowerDisplayText = '0'
 addOperatorListeners();
 addKeyPadListeners();
 addMemoryButtonListeners();
@@ -286,7 +290,8 @@ function addKeyPadListeners() {
             }
             else if (memoryMode) {
                 if (e.target.getAttribute('key') == '9') {
-                    storeToMemory(value.getRunningTotal(), memory.getMemoryPosition())
+                    let decimal = countDecimalPlaces(value.getRunningTotal());
+                    storeToMemory(value.getRunningTotal().toFixed(decimal), memory.getMemoryPosition())
                     memoryIndicators[(memory.getMemoryPosition()) - 1].textContent = "\u25BE";
                     memoryMode = false;
                     setMemoryKeys(false)
