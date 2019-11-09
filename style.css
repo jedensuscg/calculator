@@ -28,6 +28,7 @@
     border-radius: 50px;
     margin: 5px;
     box-shadow: 2px 5px 5px rgb(63, 63, 63), -5px -5px 20px rgb(63, 63, 63) inset;
+    height: 110px;
 }
 
 .memOff{
@@ -42,16 +43,36 @@
 
 /*#region====MEMORY BUTTONS====*/
 #memoryContainer {
-    width: 50%;
+    box-sizing: border-box;
+    width: 66%;
     display: flex;
-    justify-content: space-around;
+    justify-content: space-evenly;
 }
 
-.memoryButton{
+.memoryButton, .clearMemoryButton{
     margin: 2px;
     width: 60px;
     height: 35px;
     border-radius: 40%;
+}
+
+
+
+#logoLine{
+
+    position: relative;
+    left: 50px
+
+}
+
+#clearMemory {
+    box-sizing: border-box;
+    margin-left: -30px;
+    width: 90px;
+}
+
+#logoLine {
+    display: inline;
 }
 
 /*#endregion*/
@@ -93,11 +114,11 @@
 }
 #errorText{
     position: relative;
-    right: 70px;
+    right: 80px;
     bottom: 10px;
     text-align: left;
     color: red;
-    font-size: 24pt;
+    font-size: 18pt;
 }
 
 #memoryIndContainer {
@@ -108,6 +129,10 @@
     bottom: 6px;
 }
 
+.memoryIndicator {
+    font-size: 30pt;
+    width: 24px;
+}
 .memoryMode {
     font-size: 15pt;
     color: red;

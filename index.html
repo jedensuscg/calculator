@@ -18,20 +18,24 @@
         <div id="lowerSpan" class="displaySpan">
             <span name="errorText" id="errorText" class="display"></span>
             <span name="operatorText" id="operatorText" class="display"></span>
-            <span name="lowerDisplay" id="lowerDisplay" class="display"></span>
+            <span name="lowerDisplay" id="lowerDisplay" class="display">0</span>
         </div>
         <div id="memoryIndContainer">
-                <span data='1' class="memoryIndicator" id="memoryIndicator1">&#9660</span>
-                <span data='2' class="memoryIndicator" id="memoryIndicator2">&#9660</span>
-                <span data='3' class="memoryIndicator" id="memoryIndicator3">&#9660</span>
+                <span data='1' class="memoryIndicator" id="memoryIndicator1"> </span>
+                <span data='2' class="memoryIndicator" id="memoryIndicator2"> </span>
+                <span data='3' class="memoryIndicator" id="memoryIndicator3"> </span>
         </div>
 
     </div>
     <div id="memoryContainer">
-        <input data='' type="button" value="M1" class="memoryButton" id="memory1">
+        <input data='1' type="button" value="M1" class="memoryButton" id="memory1">
         <input data='2' type="button" value="M2" class="memoryButton" id="memory2">
         <input data='3' type="button" value="M3" class="memoryButton" id="memory3">
+        <div id="logoLine">
+            <input type="button" value="CLR MEM" class="clearMemoryButton" id="clearMemory">
+        </div>
     </div>
+
     <div id="operatorContainer">
         <input type="button" value="&plus;" id="operator" data="1">
         <input type="button" value="&minus;" id="operator" data="2">
