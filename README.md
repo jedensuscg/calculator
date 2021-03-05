@@ -3,6 +3,8 @@ The Odin Project calculator
 
 WARNING: EXTREMLY SMELLY CODE
 
+View the live version at https://jedensuscg.github.io/Calculator/
+
 A Basic calculator with memory function.
 
 To use memory function, hit the M1, M2 or M3 key to select a location and hit STORE. You can only store after an operation.  An arrow will show that you have a value stored 
